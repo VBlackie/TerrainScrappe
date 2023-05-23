@@ -2,13 +2,10 @@
 import random
 import time
 import pandas as pd
+from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-from bs4 import BeautifulSoup
-import os
-import requests
-from bs4 import BeautifulSoup
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 
@@ -19,7 +16,7 @@ all_terrains= []
 df_header = ['Location', 'Price', 'Zone', 'City', 'Area']
 df_error = ['Error', 'Error', 'Error', 'Error', 'Error']
 df = pd.DataFrame(columns=df_header)
-
+file_name_prefix = 'terrains'
 
 #This function opens the browser and the url
 def open_browser(url):
@@ -103,6 +100,8 @@ if __name__ == '__main__':
     print("\n")
     print("cleaning data")
     for i in all_terrains:
+        # If there are more than 5 spaces in the record, then it this record matches our logic.
+        # In the future, it is necessary to change the scrapping function to avoid this logic
         print(i)
         count_spaces = i.count('\n')
         if count_spaces > 5:
@@ -114,9 +113,15 @@ if __name__ == '__main__':
 
     print(df)
 
-    # this is to save the info in a csv file
-    df.to_csv('terrains.csv', index=False, header=df_header)
+    # create the csv filename with timestamp
+    current_datetime = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
+    str_current_datetime = str(current_datetime)
+    file_name = file_name_prefix + str_current_datetime + '.csv'
+
+    # save the dataframe to csv
+    df.to_csv(file_name, index=False, header=df_header)
     print("csv saved")
+    print("end of program")
 
 
 
